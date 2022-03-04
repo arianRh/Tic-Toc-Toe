@@ -12,22 +12,49 @@ class Square extends React.Component {
 			<button
 				className='square'
 				onClick={() => {
-					this.setState({ value: "X" });
+					this.props.onclick();
 				}}
 			>
-				{this.state.value}
+				{this.props.value}
 			</button>
 		);
 	}
 }
 
 class Board extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { squares: Array(9).fill(null), xIsNext: true };
+	}
+
+	handleClick(i) {
+		let squares = this.state.squares.slice();
+		squares[i] = this.state.xIsNext ? "X" : "O";
+		this.setState({ squares: squares, xIsNext: !this.state.xIsNext });
+	}
+
 	renderSquare(i) {
-		return <Square value={i} />;
+		return (
+			<Square
+				value={this.state.squares[i]}
+				onclick={() => {
+					this.handleClick(i);
+				}}
+			/>
+		);
 	}
 
 	render() {
-		let status = "Next player : X";
+		let winner = calculateWinner(this.state.squares);
+		let status;
+		if (winner) {
+			status = "Winner is : " + winner;
+		} else {
+			status = "Next player is : " + (this.state.xIsNext ? "X" : "O");
+		}
+		if (winner === "Equal") {
+			status = "Game is equal";
+		}
 		return (
 			<div>
 				<div className='status'>{status}</div>
@@ -49,6 +76,33 @@ class Board extends React.Component {
 			</div>
 		);
 	}
+}
+
+function calculateWinner(squares) {
+	const lines = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6],
+	];
+	for (let i = 0; i < lines.length; i++) {
+		const [a, b, c] = lines[i];
+		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+			return squares[a];
+		}
+		if (
+			squares.includes(null) === false &&
+			squares[a] !== squares[b] &&
+			squares[a] !== squares[c]
+		) {
+			return "Equal";
+		}
+	}
+	return null;
 }
 
 class Game extends React.Component {
