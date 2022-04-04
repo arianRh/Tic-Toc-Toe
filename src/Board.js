@@ -107,8 +107,8 @@ export function Board() {
 				<ol>{moves}</ol>
 			</div>
 			<div>
-				<h3>Player one victory : {xWinCounter}</h3>
-				<h3>Player two victory : {oWinCounter}</h3>
+				<h3>X wins : {xWinCounter}</h3>
+				<h3>O wins :{oWinCounter}</h3>
 
 				<button type='button' onClick={handleReset}>
 					Reset
